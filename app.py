@@ -36,7 +36,11 @@ try:
     if not filtered_data.empty:
         for _, row in filtered_data.iterrows():
             for column in filtered_data.columns:
-                st.write(f"**{column}:** {row[column]}")
+                if column in ['PDFs', 'Youtube', 'Epic Books'] and pd.notna(row[column]):
+                    # Display clickable link if there is a URL
+                    st.markdown(f"**{column}:** [Link]({row[column]})")
+                else:
+                    st.write(f"**{column}:** {row[column]}")
     else:
         st.write("No data available for the selected date and subject.")
 except Exception as e:
