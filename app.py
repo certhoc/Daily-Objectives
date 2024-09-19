@@ -37,8 +37,12 @@ try:
         for _, row in filtered_data.iterrows():
             for column in filtered_data.columns:
                 if column in ['PDFs', 'Youtube', 'Epic Books'] and pd.notna(row[column]):
-                    # Display clickable link if there is a URL
-                    st.markdown(f"**{column}:** [Link]({row[column]})")
+                    # Assuming the format is "Title|URL"
+                    title_url = row[column].split('|', 1)
+                    if len(title_url) == 2:
+                        title, url = title_url
+                        # Display clickable link with title
+                        st.markdown(f"**{column}:** [{title}]({url})")
                 else:
                     st.write(f"**{column}:** {row[column]}")
     else:
