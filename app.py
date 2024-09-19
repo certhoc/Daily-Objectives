@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import sqlite3
-from io import BytesIO
+import tempfile
 
 # Streamlit app
 st.title("Daily Objectives Viewer")
@@ -11,9 +11,13 @@ uploaded_file = st.file_uploader("Upload your SQLite database", type=["db"])
 
 if uploaded_file is not None:
     try:
-        # Load database from uploaded file
-        with BytesIO(uploaded_file.read()) as db_file:
-            conn = sqlite3.connect(db_file)
+        # Create a temporary file to save the uploaded database
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            temp_file.write(uploaded_file.read())
+            temp_file.flush()  # Ensure the file is written to disk
+
+            # Connect to the temporary database file
+            conn = sqlite3.connect(temp_file.name)
             query = "SELECT * FROM 'Daily Objectives'"
             df = pd.read_sql(query, conn)
         
